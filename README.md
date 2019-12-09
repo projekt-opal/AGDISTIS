@@ -1,77 +1,44 @@
-# AGDISTIS - Agnostic Named Entity Disambiguation
+# OPAL Named Entity Disambiguation and indexing component 
 
-[![Build Status](https://gitlab.com/aksw/AGDISTIS/badges/master/build.svg)](https://gitlab.com/aksw/AGDISTIS/pipelines)
-[![Project Stats](https://www.openhub.net/p/AGDISTIS/widgets/project_thin_badge.gif)](https://www.ohloh.net/p/AGDISTIS)
-[![BCH compliance](https://bettercodehub.com/edge/badge/AKSW/AGDISTIS)](https://bettercodehub.com/)
+AGDISTIS (Agnostic Named Entity Disambiguation) aims at delivering a framework for disambiguating a priori annotated named entities.
+It has been extended in the project LIMBO to integrate the search engine Elasticsearch.
+In the project OPAL, the geographical database LauNuts was integrated.
 
+Links to other versions:
 
->The new web services are available here:
->```
->en http://akswnc9.informatik.uni-leipzig.de:8113/AGDISTIS
->de http://akswnc9.informatik.uni-leipzig.de:8114/AGDISTIS
->es http://akswnc9.informatik.uni-leipzig.de:8115/AGDISTIS
->fr http://akswnc9.informatik.uni-leipzig.de:8116/AGDISTIS
->it http://akswnc9.informatik.uni-leipzig.de:8117/AGDISTIS
->ja http://akswnc9.informatik.uni-leipzig.de:8118/AGDISTIS
->nl http://akswnc9.informatik.uni-leipzig.de:8119/AGDISTIS
->pt http://akswnc9.informatik.uni-leipzig.de:8220/AGDISTIS
->zh http://139.18.2.164:8080/AGDISTIS_ZH
->wikidata http://akswnc9.informatik.uni-leipzig.de:8221/AGDISTIS
->```
+- [AGDISTIS](https://github.com/dice-group/AGDISTIS)
+- [AGDISTIS Elasticsearch](https://github.com/dice-group/AGDISTIS/tree/elasticsearch_development)  
+ 
+## Installation
 
-This project aims at delivering a framework for disambiguating a priori annotated named entities.
+The underlying indexing system is Elasticsearch 6.6.
+The installation with Docker is described at [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/6.6/docker.html).
+The following commands can be used:
 
-More information about the project can be found <a href="http://aksw.org/projects/AGDISTIS">here</a> and in our <a href="https://github.com/AKSW/AGDISTIS/wiki">Wiki</a>.
+ - `docker pull docker.elastic.co/elasticsearch/elasticsearch:6.6.0`
+ - `docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.6.0`
 
-Supplementary material can be found in the documents folder.
+To import the required data, perform the following steps: 
+- Download and extract the [LauNuts dataset](https://hobbitdata.informatik.uni-leipzig.de/OPAL/LauNuts/)
+- Set the property `folderWithTTLFiles` in `agdistis.properties`
+- Run the `TripleIndexCreator`
+- Validate the data status on [http://localhost:9200/_cat/indices?v](http://localhost:9200/_cat/indices?v) using the [Elasticsearch cat indices API](https://www.elastic.co/guide/en/elasticsearch/reference/6.6/cat-indices.html)
 
-We hope you will enjoy using AGDISTIS!
-
-### Support and Feedback
-If you need help or you have questions do not hesitate to write an email to  <a href="mailto:usbeck@uni-paderborn.de"> Dr. Ricardo Usbeck</a>. Or use the issue tracker in the right sidebar.
-
-### How to cite
-```Tex
-
-@InProceedings{Moussallem2017,
-  author       = {Diego Moussallem and Ricardo Usbeck and Michael R{\"o}der and Axel-Cyrille {Ngonga Ngomo}},
-  title        = {{MAG: A Multilingual, Knowledge-base Agnostic and Deterministic Entity Linking Approach}},
-  booktitle    = {K-CAP 2017: Knowledge Capture Conference},
-  year         = {2017},
-  pages        = {8},
-  organization = {ACM},
-  url          = {https://svn.aksw.org/papers/2017/KCAP_MAG/sigconf-main.pdf},
-}
-
-@incollection{AGDISTIS_ISWC,
-  author = {Usbeck, Ricardo and {Ngonga Ngomo}, Axel-Cyrille and Auer, S{\"o}ren and Gerber, Daniel and Both, Andreas},
-  booktitle = {13th International Semantic Web Conference},
-  title = {AGDISTIS - Graph-Based Disambiguation of Named Entities using Linked Data},
-  url = {http://svn.aksw.org/papers/2014/ISWC_AGDISTIS/public.pdf},
-  year = 2014
-}
-```
-
-### Acknowlegements
-The first version of this work was supported by the ESF and the Free State of Saxony.
-AGDISTIS is now supported by the German Federal Ministry of Education and Research and EuroStars.
+Start the webservices using org.aksw.agdistis.webapp.RunApp.
 
 
-### Annotation Tool
+### Usage
 
-The used annotation tool can be downloaded from <a href="https://github.com/RicardoUsbeck/QRTool">here</a>.
+- Use the [AGDISTIS webservice URLs](https://github.com/dice-group/AGDISTIS/wiki/2-Asking-the-webservice) to disambiguate places
+- Disambiguation example: `curl --data-urlencode "text='The city of <entity>Paderborn</entity> has over 150,000 inhabitants.'" -d type='agdistis' http://localhost:8080/AGDISTIS`
+- Candidates example: `curl --data-urlencode "text='The city of <entity>Hamburg</entity> is also a federal state.'" -d type='candidates' http://localhost:8080/AGDISTIS`
 
-### Disclaimer
 
-The deployed webservice does not reflect the optimal parametrization of AGDISTIS as published.
+## Credits
 
-### Bindings
-* Python bindings: https://pypi.python.org/pypi/agdistispy/
+[Data Science Group (DICE)](https://dice-research.org/) at [Paderborn University](https://www.uni-paderborn.de/)
 
-### Running AGDISTIS
-
-### How to run
-```
-mvn clean package tomcat:run
-```
-For more information, go to our <a href="https://github.com/AKSW/AGDISTIS/wiki/3-Running-the-webservice">Wiki</a>.
+This work has been supported by the German Federal Ministry of Transport and Digital Infrastructure (BMVI) in the projects
+[Open Data Portal Germany (OPAL)](http://projekt-opal.de/) (funding code 19F2028A)
+and
+[Linked Data Services for Mobility (LIMBO)](https://www.limbo-project.org/) (funding code 19F2029I).
