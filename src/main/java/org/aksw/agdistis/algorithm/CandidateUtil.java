@@ -396,7 +396,8 @@ public class CandidateUtil {
 		ArrayList<ContextDocument> candidatesScore = new ArrayList<>();
 
 		if (popularity) { // Frequency of entities.
-			tmp.addAll(index.search(null, "http://www.w3.org/2000/01/rdf-schema#label", label, 500));
+			//tmp.addAll(index.search(null, "http://www.w3.org/2000/01/rdf-schema#label", label, 500));
+			tmp.addAll(index.search(null, "http://www.w3.org/2004/02/skos/core#prefLabel", label, 500));
 			if (searchInSurfaceFormsToo) {
 				tmp.clear();
 				tmp.addAll(index.search(null, "http://www.w3.org/2004/02/skos/core#altLabel", label, 500));
@@ -443,7 +444,8 @@ public class CandidateUtil {
 			}
 			return finalTmp;
 		} else {
-			tmp.addAll(index.search(null, "http://www.w3.org/2000/01/rdf-schema#label", label));
+			//tmp.addAll(index.search(null, "http://www.w3.org/2000/01/rdf-schema#label", label));
+			tmp.addAll(index.search(null, "http://www.w3.org/2004/02/skos/core#prefLabel", label, 500));
 			if (searchInSurfaceFormsToo) {
 				tmp.clear();
 				tmp.addAll(index.search(null, "http://www.w3.org/2004/02/skos/core#altLabel", label));

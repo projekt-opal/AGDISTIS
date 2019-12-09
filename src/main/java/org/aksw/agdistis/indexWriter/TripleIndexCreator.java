@@ -91,8 +91,8 @@ public class TripleIndexCreator {
             String envIndexType = System.getenv("useElasticsearch");
             Boolean useElasticsearch = Boolean.valueOf(envIndexType != null ? envIndex : prop.getProperty("useElasticsearch"));
             org.aksw.agdistis.indexWriter.TripleIndexCreator ic = new org.aksw.agdistis.indexWriter.TripleIndexCreator();
-            //ic.createIndex(listOfFiles, index, baseURI,useElasticsearch);
-            ic.writeIndexFromFTP(baseURI,useElasticsearch);
+            ic.createIndex(listOfFiles, index, baseURI,useElasticsearch);
+            //ic.writeIndexFromFTP(baseURI,useElasticsearch);
             ic.close();
         } catch (IOException e) {
             log.error("Error while creating index. Maybe the index is corrupt now.", e);
